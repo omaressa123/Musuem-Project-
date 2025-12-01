@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museum Digital Gateway</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Global Dark Theme */
+        body {
+            background-color: #0f1115;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #161b22 !important;
+            border-bottom: 1px solid #2d333b;
+        }
+
+        /* Card Styling & Glow Effects */
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            box-shadow: 0 0 15px rgba(31, 111, 235, 0.1); /* Subtle Blue Glow */
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .card-header-glow {
+            border-bottom: 1px solid #1f6feb;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* Form Inputs */
+        .form-control, .form-select {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+        }
+        
+        /* Focus state for inputs */
+        .form-control:focus, .form-select:focus {
+            background-color: #0d1117;
+            color: #fff;
+            border-color: #1f6feb;
+            box-shadow: 0 0 0 0.25rem rgba(31, 111, 235, 0.25);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: #1f6feb;
+            border: none;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #1a5cbf;
+        }
+
+        /* Ticket Counter Buttons */
+        .counter-btn {
+            width: 35px;
+            height: 35px;
+            background-color: #21262d;
+            color: #58a6ff;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        .counter-btn:hover {
+            background-color: #30363d;
+        }
+
+        /* Utility: Hide sections by default */
+        .page-section {
+            display: none; /* JavaScript will toggle this */
+            animation: fadeIn 0.4s;
+        }
+        
+        /* Show Home by default */
+        #home-section {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4 sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" onclick="showSection('home')">
+                <i class="fas fa-landmark me-2"></i>MUSEUM
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="showSection('home')">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('reservation')">Exhibits & Booking</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('profile')">My Profile</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <button class="btn btn-outline-light btn-sm me-2" id="loginRegisterToggle">Login / Register</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4">
+
+        <div id="home-section" class="page-section">
+            <div class="p-5 mb-4 bg-dark rounded-3 border border-secondary position-relative overflow-hidden">
+                <div style="position: absolute; top:0; left:0; width: 100%; height: 100%; background: linear-gradient(90deg, #0f1115 20%, rgba(31, 111, 235, 0.2) 100%); z-index: 0;"></div>
+                
+                <div class="position-relative" style="z-index: 1;">
+                    <h1 class="display-5 fw-bold">Featured: "The Future of Art"</h1>
+                    <p class="col-md-8 fs-4 text-light">Explore the intersection of technology, society, and creativity through immersive installations.</p>
+                    <button class="btn btn-primary btn-lg" onclick="showSection('reservation')">Book Tickets</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 col-lg-2 mb-3">
+                    <div class="card p-3">
+                        <h5 class="mb-3"><i class="fas fa-filter me-2"></i>Filter</h5>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Category</label>
+                            <select class="form-select" size="3">
+                                <option selected>All</option>
+                                <option>Art</option>
+                                <option>Science</option>
+                                <option>History</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Status</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked id="checkCurrent">
+                                <label class="form-check-label" for="checkCurrent">Current</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkUpcoming">
+                                <label class="form-check-label" for="checkUpcoming">Upcoming</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9 col-lg-10">
+                    <h4 class="mb-3">Exhibit Cards</h4>
+                    <div class="row row-cols-1 row-cols-md-3 row-cols-xl-4 g-4">
+                        <div class="col">
+                            <div class="card h-100">
+                                <div style="height: 150px; background-color: #21262d; display: flex; align-items: center; justify-content: center; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                                    <i class="fas fa-landmark fa-3x text-muted"></i>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Ancient Wonders</h5>
+                                    <p class="card-text small text-muted">A journey through the pyramids and ancient civilizations.</p>
+                                    <button class="btn btn-primary mt-auto w-100" onclick="showSection('reservation')">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card h-100">
+                                <div style="height: 150px; background-color: #21262d; display: flex; align-items: center; justify-content: center; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                                    <i class="fas fa-rocket fa-3x text-muted"></i>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Space Odyssey</h5>
+                                    <p class="card-text small text-muted">Discover the mysteries of the cosmos and space travel.</p>
+                                    <button class="btn btn-primary mt-auto w-100" onclick="showSection('reservation')">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card h-100">
+                                <div style="height: 150px; background-color: #21262d; display: flex; align-items: center; justify-content: center; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                                    <i class="fas fa-palette fa-3x text-muted"></i>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">Modern Art</h5>
+                                    <p class="card-text small text-muted">Contemporary masterpieces from the 21st century.</p>
+                                    <button class="btn btn-primary mt-auto w-100" onclick="showSection('reservation')">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="reservation-section" class="page-section">
+            <div class="container" style="max-width: 900px;">
+                <h2 class="mb-4">Ticket Reservation</h2>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card p-4 h-100">
+                            <div class="card-header-glow">
+                                <h5><i class="far fa-calendar-alt me-2"></i>Select Date</h5>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Visit Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="visitDate">
+                            </div>
+                            <div class="alert alert-dark border-secondary small">
+                                <i class="fas fa-info-circle me-2"></i> Opening Hours: 9:00 AM - 6:00 PM. Last entry at 5:00 PM.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="card p-4">
+                            <div class="card-header-glow">
+                                <h5>Select Tickets</h5>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <div class="fw-bold">Adult</div>
+                                    <div class="small text-muted">$20.00</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <button class="counter-btn" onclick="updateCount('adult', -1)">-</button>
+                                    <span id="qty-adult" class="mx-3 fw-bold" style="width: 20px; text-align: center;">0</span>
+                                    <button class="counter-btn" onclick="updateCount('adult', 1)">+</button>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <div class="fw-bold">Child</div>
+                                    <div class="small text-muted">$10.00 (Under 12)</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <button class="counter-btn" onclick="updateCount('child', -1)">-</button>
+                                    <span id="qty-child" class="mx-3 fw-bold" style="width: 20px; text-align: center;">0</span>
+                                    <button class="counter-btn" onclick="updateCount('child', 1)">+</button>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div>
+                                    <div class="fw-bold">Senior</div>
+                                    <div class="small text-muted">$15.00 (65+)</div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <button class="counter-btn" onclick="updateCount('senior', -1)">-</button>
+                                    <span id="qty-senior" class="mx-3 fw-bold" style="width: 20px; text-align: center;">0</span>
+                                    <button class="counter-btn" onclick="updateCount('senior', 1)">+</button>
+                                </div>
+                            </div>
+
+                            <div class="bg-dark p-3 rounded border border-secondary">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Total Tickets:</span>
+                                    <span id="total-qty" class="fw-bold">0</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="fs-5 fw-bold">Total Price:</span>
+                                    <span class="fs-5 fw-bold text-primary" id="total-price">$0</span>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary w-100 mt-3 btn-lg" id="reserveNowButton">Reserve Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="profile-section" class="page-section">
+            <div class="container" style="max-width: 1000px;">
+                <h2 class="mb-4">My Profile</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center p-4 h-100">
+                            <div class="card-header-glow">
+                                <h5>User Details</h5>
+                            </div>
+                            <div class="mb-3">
+                                <div style="width: 100px; height: 100px; background-color: #21262d; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 2px solid #30363d;">
+                                    <i class="fas fa-user fa-3x text-secondary"></i>
+                                </div>
+                            </div>
+                            <h3 id="profileFullName">John Doe</h3>
+                            <p class="text-muted" id="profileEmail">john.doe@example.com</p>
+                            <p class="text-muted small"><i class="fas fa-phone me-2"></i>+1 234 567 8900</p>
+                            <button class="btn btn-outline-light w-100 mt-auto">Edit Profile</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="card p-4 h-100">
+                            <ul class="nav nav-tabs border-secondary mb-3">
+                                <li class="nav-item">
+                                    <a class="nav-link active bg-transparent text-white border-primary border-bottom-0 border-top-0 border-end-0 border-start-0" style="border-bottom: 2px solid #1f6feb !important;" href="#">My Tickets</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-muted" href="#">Notifications <span class="badge bg-danger ms-1">1</span></a>
+                                </li>
+                            </ul>
+
+                            <div id="userReservationsContainer">
+                                <!-- Reservations will be loaded here by JavaScript -->
+                                <div class="d-flex flex-column flex-md-row align-items-center border border-secondary p-3 rounded mb-3" style="background: #0d1117;">
+                                    <div class="bg-white p-2 rounded mb-3 mb-md-0 me-md-4">
+                                        <i class="fas fa-qrcode fa-4x text-dark"></i>
+                                    </div>
+                                    <div class="flex-grow-1 text-center text-md-start">
+                                        <h4 class="mb-1 text-primary">The Future of Art</h4>
+                                        <p class="mb-1 text-white">Date: <span class="fw-bold">Oct 24, 2025</span></p>
+                                        <p class="mb-0 text-muted small">Time: 10:00 AM | Adult x2</p>
+                                    </div>
+                                    <div class="mt-3 mt-md-0">
+                                        <button class="btn btn-primary btn-sm w-100 mb-2">Download</button>
+                                        <button class="btn btn-outline-danger btn-sm w-100">Cancel</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center text-muted mt-4 p-4 border border-secondary border-dashed rounded" style="border-style: dashed !important;">
+                                    <i class="fas fa-ticket-alt fa-2x mb-2"></i>
+                                    <p>No other active tickets found.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="register-section" class="page-section">
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
+                        <div class="card p-4">
+                            <div class="text-center mb-4">
+                                <h2 class="fw-bold">Create Account</h2>
+                                <p class="text-muted">Join the museum community</p>
+                            </div>
+                            
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">First Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="registerFirstName" placeholder="John">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Last Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="registerLastName" placeholder="Doe">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="registerEmail" placeholder="name@example.com">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Phone Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-phone"></i></span>
+                                        <input type="tel" class="form-control" id="registerPhoneNumber" placeholder="123-456-7890">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="registerPassword" placeholder="********">
+                                    </div>
+                                </div>
+                                
+                                <button type="button" class="btn btn-primary w-100 btn-lg mb-3" id="signupButton">Sign Up</button>
+                                
+                                <div class="text-center">
+                                    <span class="text-muted">Already have an account? </span>
+                                    <a href="#" class="text-primary text-decoration-none fw-bold">Log In</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="login-section" class="page-section">
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
+                        <div class="card p-4">
+                            <div class="text-center mb-4">
+                                <h2 class="fw-bold">Login</h2>
+                                <p class="text-muted">Access your museum account</p>
+                            </div>
+                            
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-envelope"></i></span>
+                                        <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark border-secondary text-secondary"><i class="fas fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="loginPassword" placeholder="********">
+                                    </div>
+                                </div>
+                                
+                                <button type="button" class="btn btn-primary w-100 btn-lg mb-3" id="loginButton">Login</button>
+                                
+                                <div class="text-center">
+                                    <span class="text-muted">Don't have an account? </span>
+                                    <a href="#" class="text-primary text-decoration-none fw-bold" onclick="showSection('register')">Sign Up</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. NAVIGATION LOGIC ---
+        let currentExhibitId = null; // Store the currently selected exhibit ID
+
+        function showSection(sectionId, exhibitId = null) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(sec => sec.style.display = 'none');
+
+            // Show selected section
+            const target = document.getElementById(sectionId + '-section');
+            if (target) {
+                target.style.display = 'block';
+            }
+
+            // Update Navbar Active State
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            // Simple logic to highlight nav item based on sectionId (optional enhancement)
+            // You can add logic here to match the clicked link to the active class
+
+            if (sectionId === 'home') {
+                fetchEvents();
+            } else if (sectionId === 'reservation' && exhibitId) {
+                currentExhibitId = exhibitId;
+                // Optionally, fetch and display event details on the reservation page
+                console.log('Selected Event ID for reservation:', currentExhibitId);
+            } else if (sectionId === 'profile') {
+                displayUserProfile();
+                fetchVisitorOrders();
+            }
+        }
+
+        let currentEventId = null; // Store the currently selected event ID
+
+        // Function to fetch events from backend
+        async function fetchEvents() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/events');
+                const events = await response.json();
+                const eventsContainer = document.querySelector('.row-cols-1.row-cols-md-3.row-cols-xl-4.g-4');
+                eventsContainer.innerHTML = ''; // Clear existing static content
+
+                events.forEach(event => {
+                    const colDiv = document.createElement('div');
+                    colDiv.classList.add('col');
+                    colDiv.innerHTML = `
+                        <div class="card h-100">
+                            <div style="height: 150px; background-color: #21262d; display: flex; align-items: center; justify-content: center; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                                <i class="fas fa-calendar-alt fa-3x text-muted"></i>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">${event.title}</h5>
+                                <p class="card-text small text-muted">${event.description}</p>
+                                <p class="card-text small text-info">${event.start_date} to ${event.end_date}</p>
+                                <button class="btn btn-primary mt-auto w-100" onclick="showSection('reservation', ${event.id})">Book Now</button>
+                            </div>
+                        </div>
+                    `;
+                    eventsContainer.appendChild(colDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
+        }
+
+        // --- 2. TICKET CALCULATOR LOGIC ---
+        let counts = {
+            adult: 0,
+            child: 0,
+            senior: 0
+        };
+
+        let totalTickets = 0; // Declare totalTickets here
+
+        const prices = {
+            adult: 20,
+            child: 10,
+            senior: 15
+        };
+
+        function updateCount(type, change) {
+            // Prevent negative numbers
+            if (counts[type] + change < 0) return;
+
+            // Update internal count
+            counts[type] += change;
+
+            // Update HTML display
+            document.getElementById(`qty-${type}`).innerText = counts[type];
+
+            // Recalculate Totals
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            totalTickets = counts.adult + counts.child + counts.senior; // Update totalTickets
+            let totalPrice = (counts.adult * prices.adult) + 
+                             (counts.child * prices.child) + 
+                             (counts.senior * prices.senior);
+
+            document.getElementById('total-qty').innerText = totalTickets;
+            document.getElementById('total-price').innerText = '$' + totalPrice;
+        }
+
+        // --- 3. REGISTRATION LOGIC ---
+        document.getElementById('signupButton').addEventListener('click', async () => {
+            const first_name = document.getElementById('registerFirstName').value;
+            const last_name = document.getElementById('registerLastName').value;
+            const email = document.getElementById('registerEmail').value;
+            const phone_number = document.getElementById('registerPhoneNumber').value;
+            const password = document.getElementById('registerPassword').value;
+
+            const response = await fetch('http://127.0.0.1:5000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ first_name, last_name, email, phone_number, password }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                showSection('profile'); // Redirect to profile or login after successful registration
+            } else {
+                alert(result.error);
+            }
+        });
+
+        // --- 4. LOGIN LOGIC ---
+        document.getElementById('loginButton').addEventListener('click', async () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const response = await fetch('http://127.0.0.1:5000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                // Store user info (e.g., in localStorage) for later use
+                localStorage.setItem('visitor_id', result.visitor_id);
+                localStorage.setItem('visitor_first_name', result.first_name);
+                localStorage.setItem('visitor_last_name', result.last_name);
+                localStorage.setItem('visitor_email', result.email);
+                updateAuthUI(); // Update UI after successful login
+                showSection('profile'); // Redirect to profile after login
+            } else {
+                alert(result.error);
+            }
+        });
+
+        // --- 5. AUTH UI UPDATE & LOGOUT ---
+        function updateAuthUI() {
+            const loginRegisterToggle = document.getElementById('loginRegisterToggle');
+            const visitorId = localStorage.getItem('visitor_id');
+
+            if (visitorId) {
+                loginRegisterToggle.innerText = 'Logout';
+                loginRegisterToggle.onclick = () => {
+                    localStorage.removeItem('visitor_id');
+                    localStorage.removeItem('visitor_first_name');
+                    localStorage.removeItem('visitor_last_name');
+                    localStorage.removeItem('visitor_email');
+                    updateAuthUI();
+                    showSection('home');
+                };
+            } else {
+                loginRegisterToggle.innerText = 'Login / Register';
+                loginRegisterToggle.onclick = () => showSection('register');
+            }
+        }
+
+        // --- 6. RESERVATION LOGIC ---
+        document.getElementById('reserveNowButton').addEventListener('click', async () => {
+            const visitorId = localStorage.getItem('visitor_id');
+            if (!visitorId) {
+                alert('Please log in to make a reservation.');
+                showSection('login');
+                return;
+            }
+
+            const visitDate = document.getElementById('visitDate').value;
+            if (!visitDate) {
+                alert('Please select a visit date.');
+                return;
+            }
+
+            const adultTickets = counts.adult;
+            const childTickets = counts.child;
+            const seniorTickets = counts.senior;
+            const totalPrice = parseFloat(document.getElementById('total-price').innerText.replace('$', ''));
+
+            if (totalPrice <= 0) {
+                alert('Please select at least one ticket.');
+                return;
+            }
+
+            const orderData = {
+                visitor_id: visitorId,
+                event_id: currentExhibitId, // Make sure currentExhibitId is set from showSection
+                visit_date: visitDate,
+                adult_tickets: adultTickets,
+                child_tickets: childTickets,
+                senior_tickets: seniorTickets,
+                total_price: totalPrice,
+                total_tickets: totalPrice // Assuming total_tickets is the same as total_price for simplicity
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    showSection('profile'); // Redirect to profile after successful reservation
+                } else {
+                    alert(result.error || 'Order failed.');
+                }
+            } catch (error) {
+                console.error('Error during order creation:', error);
+                alert('An error occurred during order creation.');
+            }
+        });
+
+        // --- 7. PROFILE LOGIC ---
+        function displayUserProfile() {
+            const first_name = localStorage.getItem('visitor_first_name');
+            const last_name = localStorage.getItem('visitor_last_name');
+            const email = localStorage.getItem('visitor_email');
+
+            if (first_name && last_name && email) {
+                document.getElementById('profileFullName').innerText = `${first_name} ${last_name}`;
+                document.getElementById('profileEmail').innerText = email;
+            }
+        }
+
+        async function fetchVisitorOrders() {
+            const visitorId = localStorage.getItem('visitor_id');
+            const ordersContainer = document.getElementById('userReservationsContainer'); // Renaming to ordersContainer for consistency
+            ordersContainer.innerHTML = ''; // Clear existing content
+
+            if (!visitorId) {
+                ordersContainer.innerHTML = `
+                    <div class="text-center text-muted mt-4 p-4 border border-secondary border-dashed rounded" style="border-style: dashed !important;">
+                        <i class="fas fa-ticket-alt fa-2x mb-2"></i>
+                        <p>Please log in to view your tickets.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/visitor/${visitorId}/orders`);
+                const orders = await response.json();
+
+                if (response.ok && orders.length > 0) {
+                    orders.forEach(order => {
+                        order.e_tickets.forEach(ticket => {
+                            const ticketCard = document.createElement('div');
+                            ticketCard.classList.add('d-flex', 'flex-column', 'flex-md-row', 'align-items-center', 'border', 'border-secondary', 'p-3', 'rounded', 'mb-3');
+                            ticketCard.style.cssText = 'background: #0d1117;';
+                            ticketCard.innerHTML = `
+                                <div class="bg-white p-2 rounded mb-3 mb-md-0 me-md-4">
+                                    <i class="fas fa-qrcode fa-4x text-dark"></i>
+                                </div>
+                                <div class="flex-grow-1 text-center text-md-start">
+                                    <h4 class="mb-1 text-primary">${ticket.event_title}</h4>
+                                    <p class="mb-1 text-white">Visit Date: <span class="fw-bold">${ticket.visit_date}</span></p>
+                                    <p class="mb-0 text-muted small">Ticket ID: ${ticket.ticket_id} | Status: ${ticket.status} | QR: ${ticket.qr_code}</p>
+                                </div>
+                                <div class="mt-3 mt-md-0">
+                                    <button class="btn btn-primary btn-sm w-100 mb-2">Download</button>
+                                    <button class="btn btn-outline-danger btn-sm w-100">Cancel</button>
+                                </div>
+                            `;
+                            ordersContainer.appendChild(ticketCard);
+                        });
+                    });
+                } else {
+                    ordersContainer.innerHTML = `
+                        <div class="text-center text-muted mt-4 p-4 border border-secondary border-dashed rounded" style="border-style: dashed !important;">
+                            <i class="fas fa-ticket-alt fa-2x mb-2"></i>
+                            <p>No active tickets found.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error fetching visitor orders:', error);
+                ordersContainer.innerHTML = `
+                    <div class="text-center text-danger mt-4 p-4 border border-secondary border-dashed rounded" style="border-style: dashed !important;">
+                        <i class="fas fa-exclamation-circle fa-2x mb-2"></i>
+                        <p>Error loading tickets.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize view and Auth UI
+        updateAuthUI();
+        showSection('home');
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
